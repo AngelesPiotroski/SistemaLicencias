@@ -42,9 +42,16 @@ public class Controlador {
 	/*se utiliza inyeccion de dependencia dado q se deben conocer los dias
 	 *no habiles contenidos en la controladora
 	 */
-	public Licencia generarLicenciaPorCantDias(Integer nroLegajoAgente, int cantDiasGenerarLicencia) throws ErrorControlador {
+	
+	//este metodo muestra la cantidad de dias q se tomaran del año correspondiente(si es q tiene dias sino salta exception) para mostrarse en vista
+	public ArrayList<DiasTomados> generarLicenciaPorCantDias(Integer nroLegajoAgente, int cantDiasGenerarLicencia,Calendar fechaInicio) throws ErrorControlador {
+		//enteros contadores
+		int cantDiasTomadosDeAnio=0,diasOcupados=0;
+		//obj empleado a asignar
 		Empleado empleadoGenerarLic = null;
 		empleadoGenerarLic=buscarEmpleado(nroLegajoAgente);
+		//coleccion de dias tomados por anio a mostrar en la ventana
+		ArrayList<DiasTomados> losDiasTomados=new ArrayList<DiasTomados>();
 		if(empleadoGenerarLic==null) {
 			throw new ErrorControlador("No se encontro el Empleado con el numero de Legajo("+nroLegajoAgente+").");
 		}else {
@@ -53,18 +60,31 @@ public class Controlador {
 				{
 					break;
 				}else {
-					while((d.getDiasDisponibles()-d.getDiasOcupados() > 0)&&(cantDiasGenerarLicencia>0))//si hay dias para tomar de ese anio y aun faltan tomar dias
+					diasOcupados=d.getDiasOcupados();//guardo los dias ocupados para no tocar el del objeto
+					while((d.getDiasDisponibles()-diasOcupados > 0)&&(cantDiasGenerarLicencia>0))//si hay dias para tomar de ese anio y aun faltan tomar dias
 					{
-						d.setDiasOcupados(d.getDiasOcupados()+1);//ocupamos un dia	
-						cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
-						/*
-						 * traer los dias no habiles, traer la fecha de cuando a cuando en la interfaz de la funcion, recorrer los calendars y crear la licencia si tiene
-						 * los dias....
-						 */
+							if(!(d.getDiasDisponibles()-d.getDiasOcupados() > 0))//si ya no le quedan dias a esa licencia
+							{
+								DiasTomados diasTomadosLic = new DiasTomados(cantDiasTomadosDeAnio,d);//tomamos los datos sacados de esa lic
+								losDiasTomados.add(diasTomadosLic);
+								cantDiasTomadosDeAnio=0;
+								break;
+							}else {
+								//aca va un control de los dias habiles que contendria todo lo de abajo
+								diasOcupados++;//ocupamos un dia	
+								cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
+								cantDiasTomadosDeAnio++;
+							}
 					}
 				}
+			}//fin del for de dias correspondientes por anio
+			if(cantDiasGenerarLicencia>0)//quiere decir q no se pudo tomar los dias
+			{
+				losDiasTomados.clear();//como no se pudo tomar la licencia... borramos la lista que estabamos haciendo de los dias a tomar
+				throw new ErrorControlador("El Empleado("+empleadoGenerarLic.toString()+") no cuenta con los dias suficientes para generar la Licencia(Le faltaron: "+cantDiasGenerarLicencia+" dias para poder generar la Licencia).");	
 			}
 		}
+		return losDiasTomados;
 	}
 ////////////////////////////// DIA NO HABIL	//////////////////////////////
 	//buscar diaNoHabil

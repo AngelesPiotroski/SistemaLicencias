@@ -2,7 +2,7 @@ package modelo;
 
 import java.util.Calendar;
 
-public class DiaNoHabil {
+public class DiaNoHabil implements Comparable<DiaNoHabil>{
 	private Calendar feriado;
 
 	//contrusctor
@@ -18,5 +18,12 @@ public class DiaNoHabil {
 	//setter
 	public void setFeriado(Calendar feriado) {
 		this.feriado = feriado;
+	}
+
+	//ordenados por dia del año(supongo q de menor a mayor)
+	public int compareTo(DiaNoHabil dia) {
+		int resultado;
+		resultado=(this.getFeriado().get(Calendar.DAY_OF_YEAR))-(dia.getFeriado().get(Calendar.DAY_OF_YEAR));
+		return resultado;
 	}	
 }
