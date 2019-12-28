@@ -2,7 +2,7 @@ package modelo;
 
 import java.util.Calendar;
 
-public class DiasCorrespondientesPorAnio {
+public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondientesPorAnio>{
 	private Integer diasDisponibles;
 	private Integer diasOcupados;
 	private Calendar anio;
@@ -41,6 +41,13 @@ public class DiasCorrespondientesPorAnio {
 	
 	public void setAnio(Calendar anio) {
 		this.anio = anio;
+	}
+
+	//ordena los dias correspo desde el mas viejo 
+	public int compareTo(DiasCorrespondientesPorAnio dias) {
+		int resultado;
+		resultado=(this.getAnio().get(Calendar.YEAR))-(dias.getAnio().get(Calendar.YEAR));
+		return resultado;
 	}
 
 }

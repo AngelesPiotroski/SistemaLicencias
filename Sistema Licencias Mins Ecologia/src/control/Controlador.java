@@ -38,6 +38,34 @@ public class Controlador {
 	public void addDiaNoHabil(DiaNoHabil diaNoHabilAgregar) {
 		this.feriados.add(diaNoHabilAgregar);
 	}
+////////////////////////////// LICENCIA SEGUN CANTIDAD DIAS	///////////////
+	/*se utiliza inyeccion de dependencia dado q se deben conocer los dias
+	 *no habiles contenidos en la controladora
+	 */
+	public Licencia generarLicenciaPorCantDias(Integer nroLegajoAgente, int cantDiasGenerarLicencia) throws ErrorControlador {
+		Empleado empleadoGenerarLic = null;
+		empleadoGenerarLic=buscarEmpleado(nroLegajoAgente);
+		if(empleadoGenerarLic==null) {
+			throw new ErrorControlador("No se encontro el Empleado con el numero de Legajo("+nroLegajoAgente+").");
+		}else {
+			for(DiasCorrespondientesPorAnio d :empleadoGenerarLic.getCorrespondiestes()) {
+				if(cantDiasGenerarLicencia==0)//si ya tomamos la cantidad de dias deseados salimos del bucle que "toma" los dias
+				{
+					break;
+				}else {
+					while((d.getDiasDisponibles()-d.getDiasOcupados() > 0)&&(cantDiasGenerarLicencia>0))//si hay dias para tomar de ese anio y aun faltan tomar dias
+					{
+						d.setDiasOcupados(d.getDiasOcupados()+1);//ocupamos un dia	
+						cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
+						/*
+						 * traer los dias no habiles, traer la fecha de cuando a cuando en la interfaz de la funcion, recorrer los calendars y crear la licencia si tiene
+						 * los dias....
+						 */
+					}
+				}
+			}
+		}
+	}
 ////////////////////////////// DIA NO HABIL	//////////////////////////////
 	//buscar diaNoHabil
 	public DiaNoHabil buscarDiaNoHabil(Calendar fechaBuscar) {
