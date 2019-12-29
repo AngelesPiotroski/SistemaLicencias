@@ -40,7 +40,7 @@ public class Controlador {
 	}
 ////////////////////////////// LICENCIA SEGUN CANTIDAD DIAS	///////////////
 	/*se utiliza inyeccion de dependencia dado q se deben conocer los dias
-	 *no habiles contenidos en la controladora
+	 *no habiles contenidos en la controladora para poder generar las licencias
 	 */
 	
 	//este metodo muestra la cantidad de dias q se tomaran del año correspondiente(si es q tiene dias sino salta exception) para mostrarse en vista
@@ -52,6 +52,9 @@ public class Controlador {
 		empleadoGenerarLic=buscarEmpleado(nroLegajoAgente);
 		//coleccion de dias tomados por anio a mostrar en la ventana
 		ArrayList<DiasTomados> losDiasTomados=new ArrayList<DiasTomados>();
+		//calendar que se fija que no sea ni sabado, ni dormingo, ni feriado(se recorre el array dias no habiles)
+		Calendar fechaContar = fechaInicio;
+		
 		if(empleadoGenerarLic==null) {
 			throw new ErrorControlador("No se encontro el Empleado con el numero de Legajo("+nroLegajoAgente+").");
 		}else {
@@ -60,25 +63,29 @@ public class Controlador {
 				{
 					break;
 				}else {
-					diasOcupados=d.getDiasOcupados();//guardo los dias ocupados para no tocar el del objeto
+					//guardo los dias ocupados para no tocar el del objeto
+					diasOcupados=d.getDiasOcupados();
+					
 					while((d.getDiasDisponibles()-diasOcupados > 0)&&(cantDiasGenerarLicencia>0))//si hay dias para tomar de ese anio y aun faltan tomar dias
 					{
-							if(!(d.getDiasDisponibles()-d.getDiasOcupados() > 0))//si ya no le quedan dias a esa licencia
-							{
-								DiasTomados diasTomadosLic = new DiasTomados(cantDiasTomadosDeAnio,d);//tomamos los datos sacados de esa lic
-								losDiasTomados.add(diasTomadosLic);
-								cantDiasTomadosDeAnio=0;
-								break;
-							}else {
-								//aca va un control de los dias habiles que contendria todo lo de abajo
-								diasOcupados++;//ocupamos un dia	
-								cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
-								cantDiasTomadosDeAnio++;
-							}
+								if(isFeriado(fechaContar)==false)//si es un dia habil
+								{
+									diasOcupados++;//ocupamos un dia	
+									cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
+									cantDiasTomadosDeAnio++;
+								}
+								if(!(d.getDiasDisponibles()-diasOcupados > 0))//si ya no le quedan dias a esa licencia
+								{
+									DiasTomados diasTomadosLic = new DiasTomados(cantDiasTomadosDeAnio,d);//tomamos los datos sacados de esa lic
+									losDiasTomados.add(diasTomadosLic);
+									cantDiasTomadosDeAnio=0;
+									break;
+								}
+							fechaContar.add(Calendar.DAY_OF_MONTH, 1);//aumentamos un dia
 					}
 				}
 			}//fin del for de dias correspondientes por anio
-			if(cantDiasGenerarLicencia>0)//quiere decir q no se pudo tomar los dias
+			if(cantDiasGenerarLicencia>0)//quiere decir q no se pudo tomar todos los dias que se pidio
 			{
 				losDiasTomados.clear();//como no se pudo tomar la licencia... borramos la lista que estabamos haciendo de los dias a tomar
 				throw new ErrorControlador("El Empleado("+empleadoGenerarLic.toString()+") no cuenta con los dias suficientes para generar la Licencia(Le faltaron: "+cantDiasGenerarLicencia+" dias para poder generar la Licencia).");	
@@ -86,6 +93,25 @@ public class Controlador {
 		}
 		return losDiasTomados;
 	}
+
+////////////////////////////////FUNCION PARA CONOCER SI ES FERIADO///////////////////////////////
+private boolean isFeriado(Calendar fecha) {
+	boolean result=false;
+	if((fecha.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(fecha.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY))//si es sabado o domingo.. es feriado
+	{
+		result=true;
+	}else {
+		//ahora nos fijamos si no es ni sabado, ni domingo, pero si es un dia no habil...
+		for(DiaNoHabil d : feriados)
+		{										
+			if(d.getFeriado().compareTo(fecha)==0)//si son el mismo dia.... es feriado
+			{
+				result=true;
+			}
+		}
+	}
+	return result;
+}
 ////////////////////////////// DIA NO HABIL	//////////////////////////////
 	//buscar diaNoHabil
 	public DiaNoHabil buscarDiaNoHabil(Calendar fechaBuscar) {
