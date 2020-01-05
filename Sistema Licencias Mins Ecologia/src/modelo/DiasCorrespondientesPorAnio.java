@@ -6,6 +6,8 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 	private Integer diasDisponibles;
 	private Integer diasOcupados;
 	private Calendar anio;
+	private Calendar fechaVto;
+	private boolean enVigencia;//si se encuentra vencida o no(si toma vigencia la fecha de vto o no)
 	
 	public DiasCorrespondientesPorAnio(Integer diasDisponibles, Integer diasOcupados, Calendar anio) {
 		this.diasDisponibles=diasDisponibles;
@@ -17,6 +19,7 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 	public String toString() {
 		return new String("Año: "+this.getAnio().get(Calendar.YEAR)+" Remanente: "+this.getDiasDisponibles()+" Tomados: "+this.getDiasOcupados());
 	}
+	
 	//getters
 	public Integer getDiasDisponibles() {
 		return diasDisponibles;
@@ -28,6 +31,14 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 	
 	public Calendar getAnio() {
 		return anio;
+	}
+	
+	public boolean isEnVigencia() {
+		return enVigencia;
+	}
+	
+	public Calendar getFechaVto() {
+		return fechaVto;
 	}
 	
 	//setters
@@ -43,11 +54,18 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 		this.anio = anio;
 	}
 
+	public void setEnVigencia(boolean enVigencia) {
+		this.enVigencia = enVigencia;
+	}
+	
+	public void setFechaVto(Calendar fechaVto) {
+		this.fechaVto = fechaVto;
+	}
+	
 	//ordena los dias correspo desde el mas viejo 
 	public int compareTo(DiasCorrespondientesPorAnio dias) {
 		int resultado;
 		resultado=(this.getAnio().get(Calendar.YEAR))-(dias.getAnio().get(Calendar.YEAR));
 		return resultado;
 	}
-
 }

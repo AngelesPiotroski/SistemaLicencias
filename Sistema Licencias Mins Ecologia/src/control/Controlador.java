@@ -208,9 +208,6 @@ private boolean isFeriado(Calendar fecha) {
 			throw new ErrorControlador("Ya existe un empleado con el numero de Legajo "+nroLegajo+" ("+empleadoBuscar.toString()+")");
 		}
 	}
-	
-	//agregar dias correspondientes
-	//tomar licencia
 	//los modificar
 	
 }
