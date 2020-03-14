@@ -1,14 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package control;
+
+import java.util.ArrayList;
+import modelo.Empleado;
 
 /**
  *
  * @author Damian Stetson
  */
 public class Persistencia {
+
+    public ArrayList<Empleado> buscarEmpleados() {
+
+    }
+
+    public void agregarEmpleados(ArrayList<Empleado> empleados) {
+
+    }
+
+    public void agregarEmpleado(Empleado empleAgregar) {
+
+    }
+
+    Empleado buscarEmpleados(Integer nroLegajoBuscar) {
+
+    }
     
 }

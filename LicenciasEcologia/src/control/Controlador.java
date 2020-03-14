@@ -7,13 +7,22 @@ import exceptions.ErrorControlador;
 import modelo.*;
 
 public class Controlador {
-	private ArrayList<Empleado> empleados = new ArrayList<Empleado>();
+    
+        /**
+         * constructor que exige incializacion a BD
+         * @param persistencia 
+         */
+        Controlador(Persistencia persistencia){
+            this.persistencia=persistencia;
+        }
+        
+        private Persistencia persistencia;
 	private ArrayList<DiaNoHabil> feriados= new ArrayList<DiaNoHabil>();
 	private Calendar fechaActual;
 	
 	//getters
 	public ArrayList<Empleado> getEmpleados() {
-		return empleados;
+		return persistencia.buscarEmpleados();
 	}
 	public ArrayList<DiaNoHabil> getFeriados() {
 		return feriados;
@@ -24,7 +33,7 @@ public class Controlador {
 	
 	//setters
 	public void setEmpleados(ArrayList<Empleado> empleados) {
-		this.empleados = empleados;
+		this.persistencia.agregarEmpleados(empleados);
 	}
 	public void setFeriados(ArrayList<DiaNoHabil> feriados) {
 		this.feriados = feriados;
@@ -33,18 +42,22 @@ public class Controlador {
 		this.fechaActual = fechaActual;
 	}
 	public void addEmpleado(Empleado empleAgregar) {
-		this.empleados.add(empleAgregar);
+		this.persistencia.agregarEmpleado(empleAgregar);
 	}
 	public void addDiaNoHabil(DiaNoHabil diaNoHabilAgregar) {
 		this.feriados.add(diaNoHabilAgregar);
 	}
 ////////////////////////////// LICENCIA SEGUN CANTIDAD DIAS	///////////////
-	/*se utiliza inyeccion de dependencia dado q se deben conocer los dias
-	 *no habiles contenidos en la controladora para poder generar las licencias
-	 */
+	/**
+         * devuelve un objeto de tipo DiasTomados para utilizarlo en un arrayslist y mostralo como la funcion "generarLicenciaPorCantDias" pero en este caso seria de a uno,
+         * de manera individual
+         * @param nroLegajoAgente
+         * @param cantDiasGenerarLicencia
+         * @param anioDeDiasCorrespondientes
+         * @return diasTomadosDeAnioRetornar
+         * @throws ErrorControlador 
+         */
 	
-	/*devuelve un objeto de tipo DiasTomados para utilizarlo en un arrayslist y mostralo como la funcion "generarLicenciaPorCantDias" pero en este caso seria de a uno,
-	/de manera individual*/
 	public DiasTomados tomarDiasDeUnAnioCorrespondiente(Integer nroLegajoAgente, Integer cantDiasGenerarLicencia,Calendar anioDeDiasCorrespondientes) throws ErrorControlador{
 		//obj empleado a asignar
 		Empleado empleadoGenerarLic = null;
@@ -55,7 +68,7 @@ public class Controlador {
 		//obj a retornar
 		DiasTomados diasTomadosDeAnioRetornar =null;
 		
-		if(empleadoGenerarLic!=null) {//si encuntra al empleado
+		if(empleadoGenerarLic!=null) {//si encuentra al empleado
 			correspBuscado=empleadoGenerarLic.buscarDiasCorrespondientesPorAnio(anioDeDiasCorrespondientes);
 			if(correspBuscado!=null) {//si encuentra los correspondintes de ese anio del agente
 				if(correspBuscado.getDiasDisponibles()>=cantDiasGenerarLicencia)//si quedan dias disponibles y alcanzan para los q se pide
@@ -69,7 +82,7 @@ public class Controlador {
 					diasTomadosDeAnioRetornar=diasTomadosDeAnio;//para poder retonar o null, o la instancia creada
 				}else {
 					Calendar anioLic=correspBuscado.getAnio();
-					throw new ErrorControlador("El Empleado("+empleadoGenerarLic.toString()+") no cuenta con los dias suficientes para generar la Licencia(Pedidos: "+cantDiasGenerarLicencia+" Disponibles: "+correspBuscado.getDiasDisponibles()+" del año: "+anioLic.get(Calendar.YEAR)+").");	
+					throw new ErrorControlador("El Empleado("+empleadoGenerarLic.toString()+") no cuenta con los dias suficientes para generar la Licencia(Pedidos: "+cantDiasGenerarLicencia+" Disponibles: "+correspBuscado.getDiasDisponibles()+" del aï¿½o: "+anioLic.get(Calendar.YEAR)+").");	
 				}
 			}else {
 				throw new ErrorControlador("No se encontraron los dias correspondintes del anio("+anioDeDiasCorrespondientes.get(Calendar.DAY_OF_YEAR)+").");
@@ -79,14 +92,23 @@ public class Controlador {
 		}
 		return diasTomadosDeAnioRetornar;
 	}
-	//este metodo muestra la cantidad de dias q se tomaran del año correspondiente(si es q tiene dias sino salta exception) para mostrarse en vista
+        
+        /**
+         * este metodo muestra la cantidad de dias q se tomaran del anio correspondiente
+         * (si es q tiene dias sino salta exception) para mostrarse en una vista
+         * @param nroLegajoAgente
+         * @param cantDiasGenerarLicencia
+         * @param fechaInicio
+         * @return losDiasTomados
+         * @throws ErrorControlador 
+         */
 	public ArrayList<DiasTomados> generarLicenciaPorCantDias(Integer nroLegajoAgente, int cantDiasGenerarLicencia,Calendar fechaInicio) throws ErrorControlador {
-		//enteros contadores
+		//contadores
 		int cantDiasTomadosDeAnio=0,diasOcupados=0;
-		//obj empleado a asignar
+		// empleado a asignar
 		Empleado empleadoGenerarLic = null;
 		empleadoGenerarLic=buscarEmpleado(nroLegajoAgente);
-		//coleccion de dias tomados por anio a mostrar en la ventana
+		//coleccion de dias que se tomara por anio a mostrar en la ventana
 		ArrayList<DiasTomados> losDiasTomados=new ArrayList<DiasTomados>();
 		//calendar que se fija que no sea ni sabado, ni dormingo, ni feriado(se recorre el array dias no habiles)
 		Calendar fechaContar = fechaInicio;
@@ -101,8 +123,8 @@ public class Controlador {
 				}else {
 					//guardo los dias ocupados para no tocar el del objeto
 					diasOcupados=d.getDiasOcupados();
-					
-					while((d.getDiasDisponibles()-diasOcupados > 0)&&(cantDiasGenerarLicencia>0))//si hay dias para tomar de ese anio y aun faltan tomar dias
+					//si hay dias para tomar de ese anio y aun faltan tomar dias
+					while((d.getDiasDisponibles()-diasOcupados > 0)&&(cantDiasGenerarLicencia>0))
 					{
 								if(isFeriado(fechaContar)==false)//si es un dia habil
 								{
@@ -131,9 +153,15 @@ public class Controlador {
 	}
 
 ////////////////////////////////FUNCION PARA CONOCER SI ES FERIADO///////////////////////////////
+        /**
+         * funcion que retorna falso si esa fecha no es sabado/domingo/diaNoHabil
+         * @param fecha
+         * @return result
+         */
 private boolean isFeriado(Calendar fecha) {
 	boolean result=false;
-	if((fecha.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(fecha.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY))//si es sabado o domingo.. es feriado
+        //si es sabado o domingo
+	if((fecha.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)||(fecha.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY))
 	{
 		result=true;
 	}else {
@@ -187,13 +215,7 @@ private boolean isFeriado(Calendar fecha) {
 	//buscar un empleado
 	public Empleado buscarEmpleado(Integer nroLegajoBuscar){
 		Empleado empleadoBuscado=null;
-		for(Empleado e : this.empleados) {
-			if(e.getNroLegajo().equals(nroLegajoBuscar))//si se encuntra un empleado con ese nrolegajo buscado
-				{
-					empleadoBuscado=e;
-					break;
-				}
-		}
+                empleadoBuscado=persistencia.buscarEmpleados(nroLegajoBuscar);
 		return empleadoBuscado;
 	}
 	
@@ -203,7 +225,7 @@ private boolean isFeriado(Calendar fecha) {
 		if(empleadoBuscar==null)//si no se encontro un empleado con ese nrolegajo
 		{
 			Empleado empleadoAgregar = new Empleado(nroLegajo, nombre,apellido,antiguedadEmpleado);
-			addEmpleado(empleadoAgregar);
+			persistencia.agregarEmpleado(empleadoAgregar);
 		}else {
 			throw new ErrorControlador("Ya existe un empleado con el numero de Legajo "+nroLegajo+" ("+empleadoBuscar.toString()+")");
 		}
