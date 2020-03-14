@@ -13,6 +13,9 @@ public class Persistencia {
 
     }
     
+    public void comparar(){
+        
+    }
 //clase empleado
     /*public ArrayList<Empleado> buscarEmpleados() {
         prueba de pull request
