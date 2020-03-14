@@ -14,9 +14,9 @@ public class Persistencia {
     }
     
 //clase empleado
-    public ArrayList<Empleado> buscarEmpleados() {
-
-    }
+    /*public ArrayList<Empleado> buscarEmpleados() {
+        prueba de pull request
+    }*/
 
     public void agregarEmpleados(ArrayList<Empleado> empleados) {
 
