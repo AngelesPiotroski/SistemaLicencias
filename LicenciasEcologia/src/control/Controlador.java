@@ -8,12 +8,16 @@ import modelo.*;
 
 public class Controlador {
     
+        static final int MAXDIASCORRESPONDIENTESANIO = 2;
+        static final int DIASCORRESPONDIENTESPORANIO = 0;
+        
         /**
          * constructor que exige incializacion a BD
          * @param persistencia 
          */
         Controlador(Persistencia persistencia){
             this.persistencia=persistencia;
+            this.fechaActual=Calendar.getInstance();//asignamos la fecha y hora del sistema
         }
         
         private Persistencia persistencia;
@@ -128,9 +132,12 @@ public class Controlador {
 					{
 								if(isFeriado(fechaContar)==false)//si es un dia habil
 								{
-									diasOcupados++;//ocupamos un dia	
-									cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
-									cantDiasTomadosDeAnio++;
+                                                                        if(isVigente(d,empleadoGenerarLic)==true)//y estan en vigencia esos dias
+                                                                        {
+                                                                          diasOcupados++;//ocupamos un dia	
+                                                                          cantDiasGenerarLicencia--;//sacamos uno de la cantidad q debemos tomar
+                                                                          cantDiasTomadosDeAnio++;  
+                                                                        }	
 								}
 								if(!(d.getDiasDisponibles( )-diasOcupados > 0))//si ya no le quedan dias a esa licencia
 								{
@@ -152,6 +159,27 @@ public class Controlador {
 		return losDiasTomados;
 	}
 
+public boolean isVigente(DiasCorrespondientesPorAnio dias, Empleado emple){
+    boolean result=false;
+    if(dias.getFechaVto().after(fechaActual)){//si es "antes" la fecha de vto que la fecha actual quiere decir que ya paso..
+        //por lo tanto verificamos que no exista alguna licencia ya asociada a estos dias 
+        for(Licencia l : emple.getLicenciasTomadas()){
+            //si existe licencia ya tomada con estos diascorrespondinetes, es valida aun por mas que se haya pasado su vto
+            if(l.getCorrespondientesTomados().contains(dias)){
+                result=true;
+                break;//salimos del for
+            }
+        }
+        //luego del for, si result sigue siendo falso, es porque se vencio los dias corresp y no hay licencia asociada
+        if(result=false){
+            dias.setEnVigencia(false); //damos de baja los dias corresp
+        }
+    }else{
+        //si aun no esta pasado su vto
+        result=true;
+    }
+    return result;
+}
 ////////////////////////////////FUNCION PARA CONOCER SI ES FERIADO///////////////////////////////
         /**
          * funcion que retorna falso si esa fecha no es sabado/domingo/diaNoHabil
@@ -177,6 +205,36 @@ private boolean isFeriado(Calendar fecha) {
 	return result;
 }
 
+////////////////////////////// COMPROBAR SI LA LIC ES VALIDA//////////////////////////////
+/**
+ * metodo que controla si la licencia es valida segun los criterios de:
+ * si no supera la cantidad maxima de dias correspondientes tomados por anio
+ * y si los dias correspondientes se encuentras vigentes.
+ * @param lic
+ * @param emple
+ * @return result
+ */
+public boolean isValidaLicencia(Licencia lic,Empleado emple){
+    int contCantCorresp=0;
+    boolean result=false;
+    for(Licencia l : emple.getLicenciasTomadas()){//recorremos las lic que ya se tomo el empleado
+        if(l.getFechaInicio().get(Calendar.YEAR)-(lic.getFechaInicio().get(Calendar.YEAR))==0)//si inician el mismo anio
+        {
+          for(DiasTomados d : l.getCorrespondientesTomados()){//verificamos q no tome mas de dos veces los mismos corresp
+              l.getCorrespondientesTomados().contains(lic);//preguntamos si las licencias tomadas en ese anio ya tienen ese corresp
+              contCantCorresp++;
+              if(contCantCorresp>=MAXDIASCORRESPONDIENTESANIO){//si ya supero el maximo de dos licencias con los mismso corresp en el mismo anio
+                  result = false;
+                  break;
+              }
+          }
+        }
+    }
+    if(contCantCorresp<=2){
+        result=true;
+    }
+    return result;
+}
 //////////////////////////////  ASIGNAR LICENCIA  A EMPLEADO/////////////////////////////
 public void asignarLicencia(Integer nroLegajo,Licencia licAgregar) throws ErrorControlador{
     Empleado empleadoAsignarLicencia = persistencia.buscarEmpleado(nroLegajo);
@@ -186,8 +244,13 @@ public void asignarLicencia(Integer nroLegajo,Licencia licAgregar) throws ErrorC
         {
           throw new ErrorControlador("Ya existe la Licencia ha asignar al empleado("+nroLegajo+").");
         }else{
-            empleadoAsignarLicencia.setUnaLicenciaTomada(licAgregar);
-            persistencia.guardarOmodificar(empleadoAsignarLicencia);
+            //verificamos que la licencia sea valida
+            if(isValidaLicencia(licAgregar,empleadoAsignarLicencia)==true){
+              empleadoAsignarLicencia.setUnaLicenciaTomada(licAgregar);
+              persistencia.guardarOmodificar(empleadoAsignarLicencia);  
+            }else{
+                throw new ErrorControlador("El empleado("+nroLegajo+") ya supero el maximo de "+MAXDIASCORRESPONDIENTESANIO+" dias correspondientes en el año por Licencia.");
+            }      
         }
     }
      
