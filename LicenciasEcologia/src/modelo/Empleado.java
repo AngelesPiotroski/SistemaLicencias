@@ -69,6 +69,9 @@ public class Empleado {
 	public void setLicenciasTomadas(ArrayList<Licencia> licenciasTomadas) {
 		this.licenciasTomadas = licenciasTomadas;
 	}
+        public void setUnaLicenciaTomada(Licencia licenciasTomada) {
+		this.licenciasTomadas.add(licenciasTomada);
+	}
 
 ////////////////////////////// DIAS CORRESPONDIENTES	//////////////////////////////	
 	//buscar dias correspondientes por anio
@@ -92,7 +95,7 @@ public class Empleado {
 			DiasCorrespondientesPorAnio diasAgregar = new DiasCorrespondientesPorAnio(diasDisponibles,diasOcupados,anio);
 			this.correspondiestes.add(diasAgregar);
 		}else {
-			throw new ErrorEmpleado("Ya existe dias correspondientes al año ("+diasBuscar.toString()+") al Empleado ("+this.toString()+").");
+			throw new ErrorEmpleado("Ya existe dias correspondientes al aï¿½o ("+diasBuscar.toString()+") al Empleado ("+this.toString()+").");
 		}
 	}
 	
@@ -103,7 +106,10 @@ public class Empleado {
 		{
 			this.correspondiestes.remove(diasBorrar);
 		}else {
-			throw new ErrorEmpleado("No se encontraron dias correspondientes al año ("+anioBorrar+").");
+			throw new ErrorEmpleado("No se encontraron dias correspondientes al aï¿½o ("+anioBorrar+").");
 		}
 	}
+
+        //buscar una lic
+        
 }

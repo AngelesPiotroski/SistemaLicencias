@@ -3,17 +3,19 @@ package modelo;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Licencia {
-	private Integer cantDiasTomados;
+public class Licencia implements Comparable{
 	private Calendar fechaInicio;
 	private Calendar fechaFin;
 	private ArrayList<DiasTomados> correspondientesTomados  = new ArrayList<>();
+
+    public Licencia(Calendar fechaInicio, Calendar fechaFin, ArrayList<DiasTomados> correspondientesTomados) {
+        this.fechaInicio=fechaInicio;
+        this.fechaFin=fechaFin;
+        this.correspondientesTomados=correspondientesTomados;
+    }
 	
 	//getters
-	public Integer getCantDiasTomados() {
-		return cantDiasTomados;
-	}
-	
+
 	public ArrayList<DiasTomados> getCorrespondientesTomados() {
 		return correspondientesTomados;
 	}
@@ -37,11 +39,18 @@ public class Licencia {
 		this.fechaFin = fechaFin;
 	}
 
-	public void setCantDiasTomados(Integer cantDiasTomados) {
-		this.cantDiasTomados = cantDiasTomados;
-	}
-	
 	public void setFechaInicio(Calendar fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
+        
+        public int compareTo(Licencia licComparar){
+            int result;
+            result=this.fechaInicio.compareTo(licComparar.getFechaInicio());
+            return result;
+        }
+
+        @Override
+        public int compareTo(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
 }

@@ -176,12 +176,28 @@ private boolean isFeriado(Calendar fecha) {
 	}
 	return result;
 }
+
+//////////////////////////////  ASIGNAR LICENCIA  A EMPLEADO/////////////////////////////
+public void asignarLicencia(Integer nroLegajo,Licencia licAgregar) throws ErrorControlador{
+    Empleado empleadoAsignarLicencia = persistencia.buscarEmpleado(nroLegajo);
+    if(empleadoAsignarLicencia!=null)
+    {
+        if(empleadoAsignarLicencia.getLicenciasTomadas().contains(licAgregar)==true)//si ya existe esa lic en el empleado
+        {
+          throw new ErrorControlador("Ya existe la Licencia ha asignar al empleado("+nroLegajo+").");
+        }else{
+            empleadoAsignarLicencia.setUnaLicenciaTomada(licAgregar);
+            persistencia.guardarOmodificar(empleadoAsignarLicencia);
+        }
+    }
+     
+}
 ////////////////////////////// DIA NO HABIL	//////////////////////////////
 	//buscar diaNoHabil
 	public DiaNoHabil buscarDiaNoHabil(Calendar fechaBuscar) {
 		DiaNoHabil diaNoHabilBuscar=null;
 		for(DiaNoHabil d : this.feriados) {
-			if(d.getFeriado().equals(fechaBuscar)) //si se encunetra la misma fecha
+			if(d.getFeriado().equals(fechaBuscar)) //si se encuentra la misma fecha
 			{
 				diaNoHabilBuscar=d;
 				break;
@@ -215,7 +231,7 @@ private boolean isFeriado(Calendar fecha) {
 	//buscar un empleado
 	public Empleado buscarEmpleado(Integer nroLegajoBuscar){
 		Empleado empleadoBuscado=null;
-                empleadoBuscado=persistencia.buscarEmpleados(nroLegajoBuscar);
+                empleadoBuscado=persistencia.buscarEmpleado(nroLegajoBuscar);
 		return empleadoBuscado;
 	}
 	
@@ -225,7 +241,7 @@ private boolean isFeriado(Calendar fecha) {
 		if(empleadoBuscar==null)//si no se encontro un empleado con ese nrolegajo
 		{
 			Empleado empleadoAgregar = new Empleado(nroLegajo, nombre,apellido,antiguedadEmpleado);
-			persistencia.agregarEmpleado(empleadoAgregar);
+			persistencia.guardarOmodificar(empleadoAgregar);
 		}else {
 			throw new ErrorControlador("Ya existe un empleado con el numero de Legajo "+nroLegajo+" ("+empleadoBuscar.toString()+")");
 		}

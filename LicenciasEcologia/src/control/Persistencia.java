@@ -9,6 +9,11 @@ import modelo.Empleado;
  */
 public class Persistencia {
 
+    void guardarOmodificar(Empleado empleadoAsignarLicencia) {
+
+    }
+    
+//clase empleado
     public ArrayList<Empleado> buscarEmpleados() {
 
     }
@@ -21,8 +26,10 @@ public class Persistencia {
 
     }
 
-    Empleado buscarEmpleados(Integer nroLegajoBuscar) {
+    Empleado buscarEmpleado(Integer nroLegajoBuscar) {
 
     }
+
+    
     
 }
