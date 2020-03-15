@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public class DiaNoHabil implements Comparable<DiaNoHabil>{
 	private Calendar feriado;
-
+        private long IdDiaNoHabil;
 	//contrusctor
 	public DiaNoHabil(Calendar fechaAgregar) {
 		this.feriado=fechaAgregar;
@@ -20,10 +20,21 @@ public class DiaNoHabil implements Comparable<DiaNoHabil>{
 		this.feriado = feriado;
 	}
 
-	//ordenados por dia del año(supongo q de menor a mayor)
+	//ordenados por dia del aï¿½o(supongo q de menor a mayor)
 	public int compareTo(DiaNoHabil dia) {
 		int resultado;
 		resultado=(this.getFeriado().get(Calendar.DAY_OF_YEAR))-(dia.getFeriado().get(Calendar.DAY_OF_YEAR));
 		return resultado;
 	}	
+
+        
+    public long getIdDiaNoHabil() {
+        return IdDiaNoHabil;
+    }
+
+    public void setIdDiaNoHabil(long IdDiaNoHabil) {
+        this.IdDiaNoHabil = IdDiaNoHabil;
+    }
+        
 }
+

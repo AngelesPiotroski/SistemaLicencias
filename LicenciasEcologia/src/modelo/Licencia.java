@@ -7,7 +7,8 @@ public class Licencia implements Comparable{
 	private Calendar fechaInicio;
 	private Calendar fechaFin;
 	private ArrayList<DiasTomados> correspondientesTomados  = new ArrayList<>();
-
+       private long
+        
     public Licencia(Calendar fechaInicio, Calendar fechaFin, ArrayList<DiasTomados> correspondientesTomados) {
         this.fechaInicio=fechaInicio;
         this.fechaFin=fechaFin;

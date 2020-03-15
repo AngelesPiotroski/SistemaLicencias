@@ -15,7 +15,7 @@ public class Controlador {
          * constructor que exige incializacion a BD
          * @param persistencia 
          */
-        Controlador(Persistencia persistencia){
+       public Controlador(Persistencia persistencia){
             this.persistencia=persistencia;
             this.fechaActual=Calendar.getInstance();//asignamos la fecha y hora del sistema
         }

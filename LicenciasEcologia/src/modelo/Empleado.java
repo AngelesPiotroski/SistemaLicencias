@@ -11,7 +11,8 @@ public class Empleado {
 	private Calendar antiguedadEmpleado;
 	private ArrayList<DiasCorrespondientesPorAnio> correspondiestes=new ArrayList<DiasCorrespondientesPorAnio>();
 	private ArrayList<Licencia> licenciasTomadas=new ArrayList<Licencia>();
-	
+	private long IdEmpleado;
+        
 	//constructores
 	public Empleado(Integer nroLegajo) {
 		this.nroLegajo=nroLegajo;
@@ -49,6 +50,10 @@ public class Empleado {
 	public ArrayList<Licencia> getLicenciasTomadas() {
 		return licenciasTomadas;
 	}
+
+        public long getIdEmpleado() {
+            return IdEmpleado;
+        }
 	
 	//setters
 	public void setNroLegajo(Integer nroLegajo) {
@@ -72,7 +77,10 @@ public class Empleado {
         public void setUnaLicenciaTomada(Licencia licenciasTomada) {
 		this.licenciasTomadas.add(licenciasTomada);
 	}
-
+        public void setIdEmpleado(long IdEmpleado) {
+            this.IdEmpleado = IdEmpleado;
+        }
+        
 ////////////////////////////// DIAS CORRESPONDIENTES	//////////////////////////////	
 	//buscar dias correspondientes por anio
 	public DiasCorrespondientesPorAnio buscarDiasCorrespondientesPorAnio(Calendar anioBuscar) {

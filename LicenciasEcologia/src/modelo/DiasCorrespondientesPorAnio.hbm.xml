@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+ 
+    <class name="modelo.DiasCorrespondientesPorAnio"  table="DiasCorrespondientesPorAnio" schema="public" optimistic-lock="version">
+     <id name="IdDiasCorrespondientesPorAnio" column="ID_DIASCORRESPONDIENTESPORANIO"   type="long"> <generator class="native" /> </id>
+    
+    <property name="diasDisponibles" column="DIASDISPONIBLES" type="Integer">    </property>
+    <property name="diasOcupados" column="DIASDISPONIBLES" type="Integer">    </property>
+    <property name="anio" column="ANIO" type="Calendar">    </property>
+    <property name="fechaVto" column="FECHAVTO" type="Calendar">    </property>
+    <property name="enVigencia" column="ENVIGENCIA" type="boolean">    </property>
+    
+</hibernate-mapping>

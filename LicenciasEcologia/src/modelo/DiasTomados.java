@@ -5,7 +5,8 @@ import java.util.Calendar;
 public class DiasTomados implements Comparable<DiasCorrespondientesPorAnio>{
 	private DiasCorrespondientesPorAnio CorrespAnioTomado;
 	private Integer cantDiasTomados;
-	
+	private long IdDiasTomados;
+        
 	public DiasTomados(int cantDiasTomadosDeAnio, DiasCorrespondientesPorAnio d) {
 		this.cantDiasTomados=cantDiasTomadosDeAnio;
 		this.CorrespAnioTomado=d;
@@ -17,7 +18,9 @@ public class DiasTomados implements Comparable<DiasCorrespondientesPorAnio>{
 		return CorrespAnioTomado;
 	}
 
-
+        public long getIdDiasTomados() {
+            return IdDiasTomados;
+        }
 	public Integer getCantDiasTomados() {
 		return cantDiasTomados;
 	}
@@ -27,7 +30,10 @@ public class DiasTomados implements Comparable<DiasCorrespondientesPorAnio>{
 		this.CorrespAnioTomado = anioTomado;
 	}
 
-
+        public void setIdDiasTomados(long IdDiasTomados) {
+            this.IdDiasTomados = IdDiasTomados;
+        }
+       
 	public void setCantDiasTomados(Integer cantDiasTomados) {
 		this.cantDiasTomados = cantDiasTomados;
 	}

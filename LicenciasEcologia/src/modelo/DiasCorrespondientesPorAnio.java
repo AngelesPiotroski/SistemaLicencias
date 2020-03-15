@@ -8,7 +8,8 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 	private Calendar anio;
 	private Calendar fechaVto;
 	private boolean enVigencia;//si se encuentra vencida o no(si toma vigencia la fecha de vto o no)
-	
+	private long IdDiasCorrespondientesPorAnio;
+        
 	public DiasCorrespondientesPorAnio(Integer diasDisponibles, Integer diasOcupados, Calendar anio) {
 		this.diasDisponibles=diasDisponibles;
 		this.diasOcupados=diasOcupados;
@@ -17,7 +18,7 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 
 	//toString
 	public String toString() {
-		return new String("Año: "+this.getAnio().get(Calendar.YEAR)+" Remanente: "+this.getDiasDisponibles()+" Tomados: "+this.getDiasOcupados());
+		return new String("Aï¿½o: "+this.getAnio().get(Calendar.YEAR)+" Remanente: "+this.getDiasDisponibles()+" Tomados: "+this.getDiasOcupados());
 	}
 	
 	//getters
@@ -40,7 +41,11 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 	public Calendar getFechaVto() {
 		return fechaVto;
 	}
-	
+
+        public long getIdDiasCorrespondientesPorAnio() {
+            return IdDiasCorrespondientesPorAnio;
+        }
+        
 	//setters
 	public void setDiasDisponibles(Integer diasDisponibles) {
 		this.diasDisponibles = diasDisponibles;
@@ -49,6 +54,10 @@ public class DiasCorrespondientesPorAnio implements Comparable<DiasCorrespondien
 	public void setDiasOcupados(Integer diasOcupados) {
 		this.diasOcupados = diasOcupados;
 	}
+
+        public void setIdDiasCorrespondientesPorAnio(long IdDiasCorrespondientesPorAnio) {
+            this.IdDiasCorrespondientesPorAnio = IdDiasCorrespondientesPorAnio;
+        }
 	
 	public void setAnio(Calendar anio) {
 		this.anio = anio;
